@@ -10,27 +10,27 @@ The objective of this challenge is to create a function called __obtainListOfBee
 The json input into __obtainListOfBeers__  will be a string with the following content:
 ```javascript
 {  
-"Pubs":[  
-{  
-"Name":"Cask and Glass",
-"PostCode":"SW1E 5HN",
-"RegularBeers":[  
-"Shepherd Neame Master Brew",
-"Shepherd Neame Spitfire"
-],
-"GuestBeers":[  
-"Shepherd Neame --seasonal--",
-"Shepherd Neame --varies--",
-"Shepherd Neame Whitstable Bay Pale Ale"
-],
-"PubService":"https://pubcrawlapi.appspot.com/pub/?v=1&id=15938&branch=WLD&uId=mike&pubs=no&realAle=yes&memberDiscount=no&town=London",
-"Id":"15938",
-"Branch":"WLD",
-"CreateTS":"2019-05-16 19:31:39",
-...<lots of other fields which can be ignored>...
-},
-...<other pubs>...
-]
+   "Pubs":[  
+      {  
+         "Name":"Cask and Glass",
+         "PostCode":"SW1E 5HN",
+         "RegularBeers":[  
+            "Shepherd Neame Master Brew",
+            "Shepherd Neame Spitfire"
+         ],
+         "GuestBeers":[  
+            "Shepherd Neame --seasonal--",
+            "Shepherd Neame --varies--",
+            "Shepherd Neame Whitstable Bay Pale Ale"
+         ],
+         "PubService":"https://pubcrawlapi.appspot.com/pub/?v=1&id=15938&branch=WLD&uId=mike&pubs=no&realAle=yes&memberDiscount=no&town=London",
+         "Id":"15938",
+         "Branch":"WLD",
+         "CreateTS":"2019-05-16 19:31:39",
+         ...<lots of other fields which can be ignored>...
+      },
+      ...<other pubs>...
+   ]
 }
 ```
 
