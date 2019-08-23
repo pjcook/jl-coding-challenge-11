@@ -5,7 +5,7 @@ enum Errors: Error {
     case failedToRetrieveRemoteData
 }
 
-var testJsonString = """
+let testJsonString = """
 {
    "Pubs":[
       {
@@ -30,7 +30,7 @@ var testJsonString = """
 """
 
 guard let jsonData = try? Data(contentsOf: URL(string: "https://pubcrawlapi.appspot.com/pubcache/?uId=mike&lng=-0.141499&lat=51.496466&deg=0.003")!) else { throw Errors.failedToRetrieveRemoteData }
-//guard let jsonData = testJsonString(using: .utf8) else { throw Errors.invalidData }
+//guard let jsonData = testJsonString.data(using: .utf8) else { throw Errors.invalidData }
 
 struct Pubs: Decodable {
     let pubs: [Pub]
@@ -41,9 +41,11 @@ struct Pubs: Decodable {
 }
 
 extension Pubs {
-    func listUniquePubs(pubs: [Pub]) -> [Pub] {
+    /// This will return a unique list of pubs filtering pubs using "uniqueID" and selecting the unique pub with the most recent created date
+    var uniquePubs: [Pub] {
+//        let createdAt = Date()
         var filteredPubs: [Pub] = []
-        var pubs = pubs
+        var pubs = self.pubs
         
         while !pubs.isEmpty {
             let pub = pubs.removeFirst()
@@ -62,10 +64,43 @@ extension Pubs {
             filteredPubs.append(newest)
         }
         
+//        print("A:\(createdAt.timeIntervalSinceNow)")
         return filteredPubs
     }
     
-    func listAllUniqueBeers(pubs: [Pub]) -> [String] {
+    /// Alternative filtering algorithm
+    /// This will return a unique list of pubs filtering pubs using "uniqueID" and selecting the unique pub with the most recent created date
+    var uniquePubs2: [Pub] {
+//        let createdAt = Date()
+        var filteredPubs: [Pub] = []
+        let pubs = self.pubs.sorted { $0.uniqueID < $1.uniqueID }
+        var index = 0
+        
+        while index < pubs.count {
+            var pub = pubs[index]
+            index += 1
+            if index >= pubs.count {
+                filteredPubs.append(pub)
+                break
+            }
+            
+            while index < pubs.count, pub.uniqueID == pubs[index].uniqueID {
+                if pubs[index].createdTimestamp > pub.createdTimestamp {
+                    pub = pubs[index]
+                }
+                index += 1
+            }
+            filteredPubs.append(pub)
+        }
+//        print("B:\(createdAt.timeIntervalSinceNow)")
+        return filteredPubs
+    }
+    
+    /// Unique list of all beers provided by the pubs passed to the function
+    ///
+    /// - Parameter pubs: list of pubs to return unique list of beers for
+    /// - Returns: unique list of beers unsorted
+    func uniqueBeers(pubs: [Pub]) -> [String] {
         var beers: [String: Bool] = [:]
         
         for pub in pubs {
@@ -76,6 +111,11 @@ extension Pubs {
         return Array(beers.keys)
     }
     
+    /// Function to convert the JSON DATA into a Pubs model class
+    ///
+    /// - Parameter jsonData: JSON DATA to parse
+    /// - Returns: parsed Pubs class
+    /// - Throws: throws if fails to parse the JSON DATA
     static func decode(from jsonData: Data) throws -> Pubs {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -115,9 +155,14 @@ extension Pub: Hashable {
     var uniqueID: String { return id + branch }
 }
 
+/// create a function called obtainListOfBeers to convert json listing each pub within an area into json listing different types of beer available in the same area
+///
+/// - Parameter jsonData: Obtain the Json and convert it to DATA
+/// - Returns: Unique list of all beers sorted alphabetically
+/// - Throws: throws error if it fails to parse the JSON DATA
 func obtainListOfBeers(jsonData: Data) throws -> [String] {
     let pubs = try Pubs.decode(from: jsonData)
-    return pubs.listAllUniqueBeers(pubs: pubs.pubs).sorted()
+    return pubs.uniqueBeers(pubs: pubs.pubs).sorted()
 }
 
 print(try obtainListOfBeers(jsonData: jsonData))
@@ -125,9 +170,13 @@ print("\n")
 do {
     let pubs = try Pubs.decode(from: jsonData)
     let allPubsCount = pubs.pubs.count
-    let uniquePubsCount = pubs.listUniquePubs(pubs: pubs.pubs).count
+    let uniquePubsCount = pubs.uniquePubs2.count
     print("Total pubs: \(allPubsCount), unique pubs: \(uniquePubsCount)")
+    
+    let uniquePubs = pubs.uniquePubs.sorted { $0.name < $1.name }
+    let uniquePubs2 = pubs.uniquePubs2.sorted { $0.name < $1.name }
+    print("Test algorithms return same results:\(uniquePubs == uniquePubs2)")
+
 } catch {
     print("\(error)")
 }
-
