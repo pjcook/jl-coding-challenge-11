@@ -1,6 +1,5 @@
----
-title: "Challenge #11"
----
+# Challenge #11
+
 There is an app which enables users to find pubs in their local area and find detailed information about each pub. The app obtains information about pubs using a webservice that scrapes information from websites and returns pub information formatted into json. Pub details don't change very often so the webservice caches detailed pub information to a database to improve performance. The webservice stores the raw json that is returned by the webservice along with a create-timestamp.  
 
 Over time the cache has become a database of historical pub information, albeit in inconvenient json form. As its a cache, its not complete or up to date but could still be useful. 
@@ -8,29 +7,30 @@ Over time the cache has become a database of historical pub information, albeit 
 The objective of this challenge is to create a function called __obtainListOfBeers__ to convert json listing each pub within an area into json listing different types of beer available in the same area. This will form part of a new experimental webservice that will show types of beer available within a given area, and which pub serves each beer. 
 
 The json input into __obtainListOfBeers__  will be a string with the following content:
-```javascript
+
+```json
 {  
-"Pubs":[  
-{  
-"Name":"Cask and Glass",
-"PostCode":"SW1E 5HN",
-"RegularBeers":[  
-"Shepherd Neame Master Brew",
-"Shepherd Neame Spitfire"
-],
-"GuestBeers":[  
-"Shepherd Neame --seasonal--",
-"Shepherd Neame --varies--",
-"Shepherd Neame Whitstable Bay Pale Ale"
-],
-"PubService":"https://pubcrawlapi.appspot.com/pub/?v=1&id=15938&branch=WLD&uId=mike&pubs=no&realAle=yes&memberDiscount=no&town=London",
-"Id":"15938",
-"Branch":"WLD",
-"CreateTS":"2019-05-16 19:31:39",
-...<lots of other fields which can be ignored>...
-},
-...<other pubs>...
-]
+   "Pubs":[  
+      {  
+         "Name":"Cask and Glass",
+         "PostCode":"SW1E 5HN",
+         "RegularBeers":[  
+            "Shepherd Neame Master Brew",
+            "Shepherd Neame Spitfire"
+         ],
+         "GuestBeers":[  
+            "Shepherd Neame --seasonal--",
+            "Shepherd Neame --varies--",
+            "Shepherd Neame Whitstable Bay Pale Ale"
+         ],
+         "PubService":"https://pubcrawlapi.appspot.com/pub/?v=1&id=15938&branch=WLD&uId=mike&pubs=no&realAle=yes&memberDiscount=no&town=London",
+         "Id":"15938",
+         "Branch":"WLD",
+         "CreateTS":"2019-05-16 19:31:39",
+         ...<lots of other fields which can be ignored>...
+      },
+      ...<other pubs>...
+   ]
 }
 ```
 
